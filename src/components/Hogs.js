@@ -17,6 +17,7 @@ import truffle_shuffle from "../assets/truffle_shuffle.jpg"
 
 function Hogs({hogs}){
     const [filtered, setFiltered] = useState(false)
+    const [selected, setSelected] = useState("")
 
     const hogImages = {
         'Augustus Gloop': augustus_gloop,
@@ -36,13 +37,17 @@ function Hogs({hogs}){
     function handleFiltered(){   
        setFiltered((a) => !a)
     }
+
     
-    const filteredHogs =  hogs.filter(hog =>  hog.greased)
-
-
+    if (selected === "name") {
+        hogs.sort((a, b) => a.name.localeCompare(b.name)) 
+    } else if (selected === "weight") {
+        hogs.sort((a, b) => a.weight - b.weight)
+    }
     // console.log(hogImages["babe"])
-    let totalHogs =  filtered ? filteredHogs : hogs
-    const hogsToDisplay = totalHogs.map(hog=> {
+    
+    const hogsToDisplay =  hogs.filter(hog => filtered ? hog.greased : true)
+    .map(hog=> {
         return <Hog 
         name={hog.name} 
         key={hog.name} 
@@ -53,10 +58,24 @@ function Hogs({hogs}){
         medal={hog["highest medal achieved"]}
         />
     })
+    
+    
+   
+    function handleSelect(e){
+        setSelected(e.target.value)
+        
+    }
     return(
         <div >
             <button onClick={handleFiltered}>{filtered ? "Show All" : "Show Greased"}</button>
             <br></br>
+            <br></br>
+            <br></br>
+            <select onChange={handleSelect}>
+            <option selected hidden>Please select</option>
+                <option value="name">Name</option>
+                <option value="weight">Weight</option>
+            </select>
             <br></br>
             <br></br>
             <br></br>
